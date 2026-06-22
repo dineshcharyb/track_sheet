@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>July AWS DevOps Interview Prep Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1><i class="fa-brands fa-aws"></i> Mission DADDY</h1>
+                <p>Tracking for a 4-Year Experienced Cloud/DevOps Engineer Role</p>
+            </div>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-iac">0h</span>
+                        <span class="stat-label">Total IaC/K8s Time</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-wrench"></i>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-troubleshoot">0</span>
+                        <span class="stat-label">Scenarios Solved</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-clock"></i>
+                    <div class="stat-info">
+                        <span class="stat-value" id="avg-prep">0h</span>
+                        <span class="stat-label">Avg Prep/Day</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="glass-panel chart-container">
+                    <h3><i class="fa-solid fa-chart-line"></i> Prep vs Screen Time</h3>
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div class="glass-panel chart-container">
+                    <h3><i class="fa-solid fa-chart-pie"></i> Time Distribution</h3>
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="form-section glass-panel">
+                <h2><i class="fa-solid fa-pen-to-square"></i> Log Today's Progress</h2>
+                <form id="tracker-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        
+                        <!-- General Prep -->
+                        <div class="form-group">
+                            <label for="prepTime">Total Prep Time (h)</label>
+                            <input type="number" id="prepTime" step="0.5" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="screenTime">Mobile Distraction (h)</label>
+                            <input type="number" id="screenTime" step="0.5" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="discipline">Discipline/Focus (1-10)</label>
+                            <input type="number" id="discipline" min="1" max="10" required>
+                        </div>
+
+                        <!-- DevOps Specific -->
+                        <div class="form-group">
+                            <label for="iacTime">IaC/Terraform Practice (h)</label>
+                            <input type="number" id="iacTime" step="0.5" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="k8sTime">K8s & CI/CD Practice (h)</label>
+                            <input type="number" id="k8sTime" step="0.5" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sysDesignTime">System Design/Architecture (h)</label>
+                            <input type="number" id="sysDesignTime" step="0.5" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="troubleshoot">Troubleshooting Scenarios Practiced</label>
+                            <input type="number" id="troubleshoot" min="0" required>
+                        </div>
+                        
+                        <!-- Health & Status -->
+                        <div class="form-group">
+                            <label for="sleep">Sleep (hours)</label>
+                            <input type="number" id="sleep" step="0.5" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="energy">Energy Level (1-10)</label>
+                            <input type="number" id="energy" min="1" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confidence">Readiness Confidence</label>
+                            <select id="confidence">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mockInterview">Mock Interview Done?</label>
+                            <select id="mockInterview">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="lesson">Key AWS/DevOps Takeaway for Today</label>
+                        <textarea id="lesson" rows="2" placeholder="e.g., Learned how to handle cross-account IAM roles or debug EKS networking..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Save Entry</button>
+                </form>
+            </div>
+
+            <div class="table-section glass-panel">
+                <div class="table-header">
+                    <h2><i class="fa-solid fa-table"></i> Tracking Data</h2>
+                    <div class="table-actions">
+                        <button id="export-btn" class="success-btn"><i class="fa-solid fa-file-excel"></i> Export CSV</button>
+                        <button id="clear-data-btn" class="secondary-btn"><i class="fa-solid fa-trash"></i> Clear</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Prep (h)</th>
+                                <th>Distraction (h)</th>
+                                <th>Discipline</th>
+                                <th>IaC/K8s (h)</th>
+                                <th>Sys Design (h)</th>
+                                <th>Troubleshoot</th>
+                                <th>Energy</th>
+                                <th>Confidence</th>
+                                <th>Key Takeaway</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
