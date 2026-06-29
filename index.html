@@ -54,6 +54,10 @@
                     <h3><i class="fa-solid fa-chart-pie"></i> Time Distribution</h3>
                     <canvas id="distributionChart"></canvas>
                 </div>
+                <div class="glass-panel chart-container">
+                    <h3><i class="fa-solid fa-radar"></i> Consistency Heatmap</h3>
+                    <canvas id="consistencyChart"></canvas>
+                </div>
             </div>
 
             <div class="form-section glass-panel">
@@ -176,6 +180,19 @@
             </div>
         </main>
     </div>
+
+    <!-- Alert Modal -->
+    <div id="alertModal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-btn">&times;</span>
+            <h2 id="modal-title" style="color: var(--danger);"><i class="fa-solid fa-triangle-exclamation"></i> Consistency Alert</h2>
+            <div id="modal-body">
+                <!-- Warnings will be injected here -->
+            </div>
+            <button id="modal-ack-btn" class="submit-btn" style="width: 100%; margin-top: 2rem;">I Will Do Better Today</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

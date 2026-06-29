@@ -12,6 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Chart instances
     let progressChartInstance = null;
     let distributionChartInstance = null;
+    let consistencyChartInstance = null;
+
+    // Modal Elements
+    const modal = document.getElementById('alertModal');
+    const modalBody = document.getElementById('modal-body');
+    const closeBtn = document.querySelector('.close-btn');
+    const ackBtn = document.getElementById('modal-ack-btn');
+
+    closeBtn.onclick = () => modal.style.display = 'none';
+    ackBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = (event) => {
+        if (event.target == modal) modal.style.display = 'none';
+    };
 
     // State
     let logs = JSON.parse(localStorage.getItem('julyDevOpsLogs')) || [];
@@ -149,6 +162,42 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTable();
         calculateStats();
         renderCharts();
+        checkConsistency();
+    }
+
+    function checkConsistency() {
+        if (logs.length === 0) return;
+
+        // Sort logs by date descending to get the most recent days
+        const sortedLogs = [...logs].sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        const latest = sortedLogs[0];
+        const previous = sortedLogs.length > 1 ? sortedLogs[1] : null;
+
+        let warnings = [];
+
+        const checkField = (field, name) => {
+            if (latest[field] === 0 || latest[field] === 'No') {
+                if (previous && (previous[field] === 0 || previous[field] === 'No')) {
+                    warnings.push(`<div class="warning-item critical"><strong>Critical:</strong> You haven't done any <strong>${name}</strong> for 2+ consecutive logged days!</div>`);
+                } else {
+                    warnings.push(`<div class="warning-item"><strong>Warning:</strong> You missed <strong>${name}</strong> in your last session.</div>`);
+                }
+            }
+        };
+
+        checkField('iacTime', 'IaC/Terraform Practice');
+        checkField('k8sTime', 'K8s & CI/CD Practice');
+        checkField('sysDesignTime', 'System Design Practice');
+        checkField('jobsApplied', 'Job Applications');
+        
+        // Show modal if there are warnings and we just loaded the page
+        // To prevent it from showing on every save, we check a session flag
+        if (warnings.length > 0 && !sessionStorage.getItem('consistencyChecked')) {
+            modalBody.innerHTML = warnings.join('');
+            modal.style.display = 'flex';
+            sessionStorage.setItem('consistencyChecked', 'true');
+        }
     }
 
     function renderTable() {
@@ -212,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderCharts() {
         if (progressChartInstance) progressChartInstance.destroy();
         if (distributionChartInstance) distributionChartInstance.destroy();
+        if (consistencyChartInstance) consistencyChartInstance.destroy();
 
         if (logs.length === 0) return;
 
@@ -296,6 +346,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Consistency Radar Chart
+        let iacConsistency = 0, k8sConsistency = 0, sysConsistency = 0, jobsConsistency = 0;
+        logs.forEach(log => {
+            if (log.iacTime > 0) iacConsistency++;
+            if (log.k8sTime > 0) k8sConsistency++;
+            if (log.sysDesignTime > 0) sysConsistency++;
+            if (log.jobsApplied > 0) jobsConsistency++;
+        });
+
+        const ctxRadar = document.getElementById('consistencyChart').getContext('2d');
+        consistencyChartInstance = new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['IaC', 'K8s/CI-CD', 'Sys Design', 'Job Apps'],
+                datasets: [{
+                    label: 'Days Practiced',
+                    data: [iacConsistency, k8sConsistency, sysConsistency, jobsConsistency],
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    borderColor: '#10b981',
+                    pointBackgroundColor: '#10b981',
+                    borderWidth: 2
+                }, {
+                    label: 'Total Logged Days',
+                    data: [logs.length, logs.length, logs.length, logs.length],
+                    backgroundColor: 'transparent',
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 1,
+                    borderDash: [5, 5]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: { color: '#94a3b8' },
+                        ticks: { display: false, min: 0 }
+                    }
                 }
             }
         });
