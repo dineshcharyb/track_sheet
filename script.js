@@ -49,6 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
             energy: parseInt(document.getElementById('energy').value),
             confidence: document.getElementById('confidence').value,
             mockInterview: document.getElementById('mockInterview').value,
+            naukriResume: document.getElementById('naukriResume').value,
+            jobsApplied: parseInt(document.getElementById('jobsApplied').value),
             lesson: document.getElementById('lesson').value
         };
 
@@ -91,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const headers = ['Date', 'Total Prep (h)', 'Screen Time (h)', 'Discipline', 'IaC (h)', 'K8s (h)', 'Sys Design (h)', 'Troubleshoot Scenarios', 'Sleep (h)', 'Energy', 'Confidence', 'Mock Interview', 'Key Takeaway'];
+        const headers = ['Date', 'Total Prep (h)', 'Screen Time (h)', 'Discipline', 'IaC (h)', 'K8s (h)', 'Sys Design (h)', 'Troubleshoot Scenarios', 'Sleep (h)', 'Energy', 'Confidence', 'Mock Interview', 'Naukri Update', 'Jobs Applied', 'Key Takeaway'];
         
         const csvRows = [];
         csvRows.push(headers.join(','));
@@ -110,6 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 log.energy,
                 log.confidence,
                 log.mockInterview,
+                log.naukriResume || 'No',
+                log.jobsApplied || 0,
                 `"${log.lesson.replace(/"/g, '""')}"` // Escape quotes in text
             ];
             csvRows.push(values.join(','));
@@ -172,6 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${log.troubleshoot}</td>
                 <td>${log.energy}/10</td>
                 <td><span class="badge ${confidenceClass}">${log.confidence}</span></td>
+                <td>${log.naukriResume || 'No'}</td>
+                <td>${log.jobsApplied || 0}</td>
                 <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${log.lesson}">${log.lesson}</td>
                 <td>
                     <button class="delete-btn" onclick="deleteLog('${log.id}')" title="Delete">
