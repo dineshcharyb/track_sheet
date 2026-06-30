@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
             mockInterview: document.getElementById('mockInterview').value,
             naukriResume: document.getElementById('naukriResume').value,
             jobsApplied: parseInt(document.getElementById('jobsApplied').value),
-            lesson: document.getElementById('lesson').value
+            lesson: document.getElementById('lesson').value,
+            manifestation: document.getElementById('manifestation').value
         };
 
         if (existingIndex >= 0) {
@@ -106,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const headers = ['Date', 'Total Prep (h)', 'Screen Time (h)', 'Discipline', 'IaC (h)', 'K8s (h)', 'Sys Design (h)', 'Troubleshoot Scenarios', 'Sleep (h)', 'Energy', 'Confidence', 'Mock Interview', 'Naukri Update', 'Jobs Applied', 'Key Takeaway'];
+        const headers = ['Date', 'Total Prep (h)', 'Screen Time (h)', 'Discipline', 'IaC (h)', 'K8s (h)', 'Sys Design (h)', 'Troubleshoot Scenarios', 'Sleep (h)', 'Energy', 'Confidence', 'Mock Interview', 'Naukri Update', 'Jobs Applied', 'Key Takeaway', 'Manifestation'];
         
         const csvRows = [];
         csvRows.push(headers.join(','));
@@ -127,7 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 log.mockInterview,
                 log.naukriResume || 'No',
                 log.jobsApplied || 0,
-                `"${log.lesson.replace(/"/g, '""')}"` // Escape quotes in text
+                `"${log.lesson.replace(/"/g, '""')}"`, // Escape quotes in text
+                `"${(log.manifestation || '').replace(/"/g, '""')}"`
             ];
             csvRows.push(values.join(','));
         });
@@ -228,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${log.naukriResume || 'No'}</td>
                 <td>${log.jobsApplied || 0}</td>
                 <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${log.lesson}">${log.lesson}</td>
+                <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${log.manifestation || ''}">${log.manifestation || ''}</td>
                 <td>
                     <button class="delete-btn" onclick="deleteLog('${log.id}')" title="Delete">
                         <i class="fa-solid fa-trash-can"></i>
